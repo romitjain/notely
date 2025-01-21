@@ -14,6 +14,10 @@ export default function HomePage() {
     const [currentFile, setCurrentFile] = useState<MarkdownFile | null>(null);
 
     const handleFolderSelection = async () => {
+        if (!('showDirectoryPicker' in window)) {
+            console.error('File System Access API is not supported in this browser');
+            return;
+        }
         try {
             const directoryHandle = await window.showDirectoryPicker();
             const markdownFiles: MarkdownFile[] = [];

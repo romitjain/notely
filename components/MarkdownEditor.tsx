@@ -4,9 +4,9 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { coldarkDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import remarkGfm from "remark-gfm";
 import { Eye, Edit2, Save, Maximize2, Minimize2, Image as ImageIcon } from "lucide-react";
+import Image from 'next/image';
 
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 
@@ -45,7 +45,8 @@ export default function MarkdownEditor({ file }: MarkdownEditorProps) {
 
     // Custom components for ReactMarkdown with enhanced styling
     const components = {
-        code({ node, inline, className, children, ...props }: any) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        code({ inline, className, children, ...props }: any) {
             const match = /language-(\w+)/.exec(className || "");
             return !inline && match ? (
                 <SyntaxHighlighter
@@ -63,8 +64,11 @@ export default function MarkdownEditor({ file }: MarkdownEditorProps) {
                 </code>
             );
         },
-        // Enhanced image component with loading state and error handling
-        img({ node, alt, src, ...props }: any) {
+        // Convert img component to a React component to properly use hooks
+        img: function MarkdownImage({ alt, src, ...props }: {
+            alt?: string;
+            src?: string;
+        }) {
             const [isLoading, setIsLoading] = useState(true);
             const [hasError, setHasError] = useState(false);
 
@@ -86,9 +90,11 @@ export default function MarkdownEditor({ file }: MarkdownEditorProps) {
                     )}
 
                     {/* Actual image */}
-                    <img
-                        src={src}
-                        alt={alt}
+                    <Image
+                        src={src || ''}
+                        alt={alt || ''}
+                        width={800}
+                        height={600}
                         className={cn(
                             "max-w-full h-auto rounded-md",
                             isLoading && "opacity-0",

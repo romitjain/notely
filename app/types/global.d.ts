@@ -1,19 +1,31 @@
 // global.d.ts
+interface FileSystemCreateWritableOptions {
+    keepExistingData?: boolean;
+}
+
+interface FileSystemGetDirectoryOptions {
+    create?: boolean;
+}
+
+interface FileSystemGetFileOptions {
+    create?: boolean;
+}
+
 interface FileSystemFileHandle {
     kind: 'file';
     name: string;
     getFile(): Promise<File>;
-    createWritable(options?: any): Promise<FileSystemWritableFileStream>;
+    createWritable(options?: FileSystemCreateWritableOptions): Promise<FileSystemWritableFileStream>;
 }
 
 interface FileSystemDirectoryHandle {
     kind: 'directory';
     name: string;
     entries(): AsyncIterableIterator<[string, FileSystemFileHandle | FileSystemDirectoryHandle]>;
-    getDirectoryHandle(name: string, options?: any): Promise<FileSystemDirectoryHandle>;
-    getFileHandle(name: string, options?: any): Promise<FileSystemFileHandle>;
+    getDirectoryHandle(name: string, options?: FileSystemGetDirectoryOptions): Promise<FileSystemDirectoryHandle>;
+    getFileHandle(name: string, options?: FileSystemGetFileOptions): Promise<FileSystemFileHandle>;
 }
 
 interface Window {
-    showDirectoryPicker?: any;
+    showDirectoryPicker(): Promise<FileSystemDirectoryHandle>;
 }
