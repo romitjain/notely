@@ -2,28 +2,52 @@
 @tailwind components;
 @tailwind utilities;
 
-
-/* Root variables for dark theme */
-:root {
+@layer base {
+  :root {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
     /* Modern color palette */
-    --bg-primary: #0a0a0c;
-    --bg-secondary: #1a1b1e;
-    --bg-tertiary: #2a2b2f;
-    --text-primary: #f2f3f5;
-    --text-secondary: #a1a2a5;
-    --accent: #3b82f6;
-    --accent-hover: #60a5fa;
+    --bg-primary: #141c2b;
+    --bg-secondary: #1b2435;
+    --bg-tertiary: #1f2937;
+    --text-primary: #dee2e7;
+    --text-secondary: #9ba1ac;
+    --accent: #405285;
+    --accent-hover: #3b82f6;
     --success: #10b981;
     --warning: #f59e0b;
     --error: #ef4444;
     
+    /* Additional theme colors */
+    --card: #141c2b;
+    --card-foreground: #dee2e7;
+    --popover: #141c2b;
+    --popover-foreground: #9ba1ac;
+    --primary: #3b82f6;
+    --primary-foreground: #f8fafc;
+    --secondary: #1f2937;
+    --secondary-foreground: #f8fafc;
+    --border: #1f2937;
+    --input: #1f2937;
+    --ring: #3b82f6;
+    
     /* Refined spacing and styling */
     --border-radius: 8px;
     --border-radius-lg: 12px;
+    --radius: 0.5rem;
     --transition-duration: 0.15s;
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.1);
     --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
     --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
 }
 
 /* Reset and base global styles */
@@ -31,14 +55,6 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-}
-
-body {
-    background-color: var(--bg-primary);
-    color: var(--text-primary);
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
 }
 
 /* Modern container styling */
@@ -167,46 +183,4 @@ textarea:focus {
 
 ::-webkit-scrollbar-thumb:hover {
     background: var(--text-secondary);
-}
-
-@layer base {
-  :root {
-    /* Modern monochromatic dark theme */
-    --background: 222 47% 11%;        /* #141c2b */
-    --foreground: 213 31% 91%;        /* #dee2e7 */
-    
-    --muted: 223 47% 14%;             /* #1b2435 */
-    --muted-foreground: 215 20% 65%;  /* #9ba1ac */
-    
-    --accent: 224 47% 38%;            /* #405285 */
-    --accent-foreground: 213 31% 91%; /* #dee2e7 */
-    
-    --card: 222 47% 11%;              /* #141c2b */
-    --card-foreground: 213 31% 91%;   /* #dee2e7 */
-    
-    --popover: 222 47% 11%;           /* #141c2b */
-    --popover-foreground: 215 20% 65%;/* #9ba1ac */
-    
-    --primary: 221 83% 53%;           /* #3b82f6 */
-    --primary-foreground: 210 40% 98%; /* #f8fafc */
-    
-    --secondary: 223 47% 16%;         /* #1f2937 */
-    --secondary-foreground: 210 40% 98%; /* #f8fafc */
-    
-    --border: 216 34% 17%;            /* #1f2937 */
-    --input: 216 34% 17%;             /* #1f2937 */
-    --ring: 224 71% 45%;              /* #3b82f6 */
-    
-    --radius: 0.5rem;
-  }
-}
-
-
-@layer base {
-  * {
-    @apply border-border;
-    }
-  body {
-    @apply bg-background text-foreground;
-    }
 }

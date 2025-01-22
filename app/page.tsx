@@ -48,7 +48,7 @@ export default function HomePage() {
                 {currentFile ? (
                     <MarkdownEditor file={currentFile} />
                 ) : (
-                    <p>Select a folder to view its markdown files, then choose a file.</p>
+                    <p>Select a folder to view your notes.</p>
                 )}
             </div>
         </div>

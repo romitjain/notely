@@ -3,7 +3,8 @@ import { Toaster } from "@/components/ui/toaster";
 import "./globals.css";
 
 export const metadata: Metadata = {
-    title: "Markdown Editor",
+    title: "Notely",
+    description: "A simple markdown note taking app with a pinch of AI focused on privacy",
 };
 
 export default function RootLayout({
