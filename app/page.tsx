@@ -42,28 +42,24 @@ export default function HomePage() {
                 types: [{ description: "Markdown File", accept: { "text/markdown": [".md"] } }],
             });
 
-            const newFile = { name: newFileHandle.name, handle: newFileHandle, folder_handle: currentFile?.folder_handle };
+            const newFile = {
+                name: newFileHandle.name,
+                handle: newFileHandle,
+                folder_handle: currentFile?.folder_handle,
+            };
             setFiles(prev => [...prev, newFile]);
             setCurrentFile(newFile);
             handleRefresh();
-
         } catch (error) {
             console.error('Error creating new file:', error);
         }
     };
 
-    // Handler for refreshing the markdownFiles
     const handleRefresh = async () => {
-
-        if (!currentFolder) {
-            return;
-        }
+        if (!currentFolder) return;
 
         const markdownFiles: MarkdownFile[] = [];
-
-        // Iterate over all items in the selected directory
         for await (const [name, handle] of currentFolder.entries()) {
-            // Only push .md files
             if (handle.kind === 'file' && name.endsWith('.md')) {
                 markdownFiles.push({ name, handle, folder_handle: currentFolder });
             }
@@ -71,21 +67,19 @@ export default function HomePage() {
 
         setFiles(markdownFiles);
         setCurrentFile(null);
-    }
+    };
 
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
-            // Check if Ctrl/Cmd key is pressed
             if (e.ctrlKey || e.metaKey) {
                 switch (e.key) {
                     case 's':
                         e.preventDefault();
                         if (currentFile) {
-                            // Trigger save - we'll need to expose this from MarkdownEditor
+                            // Trigger save (listened for in MarkdownEditor)
                             document.dispatchEvent(new CustomEvent('save-file'));
                         }
                         break;
-                    // Toggle edit mode
                     case 'e':
                         e.preventDefault();
                         if (currentFile) {
@@ -101,20 +95,22 @@ export default function HomePage() {
     }, [currentFile]);
 
     return (
-        <div style={{ display: 'flex', height: '100vh' }}>
-            <Sidebar 
-                files={files} 
-                onFileClick={setCurrentFile} 
+        <div className="app-container">
+            {/* Sidebar has its own .sidebar class in globals.css */}
+            <Sidebar
+                files={files}
+                onFileClick={setCurrentFile}
                 onFolderSelect={handleFolderSelection}
                 onAddFile={handleAddFile}
             />
-            <div style={{ flex: 1, padding: '16px' }}>
+
+            <main className="main-content">
                 {currentFile ? (
                     <MarkdownEditor file={currentFile} onRefresh={handleRefresh} />
                 ) : (
                     <p>Select a folder to view your notes.</p>
                 )}
-            </div>
+            </main>
         </div>
     );
 }

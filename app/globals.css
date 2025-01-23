@@ -7,8 +7,8 @@
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
     /* Modern color palette */
-    --bg-primary: #141c2b;
-    --bg-secondary: #1b2435;
+    --bg-primary: #141c2b74;
+    --bg-secondary: #1b243568;
     --bg-tertiary: #1f2937;
     --text-primary: #dee2e7;
     --text-secondary: #9ba1ac;
@@ -158,14 +158,6 @@ textarea:focus {
     border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-/* Modern sidebar styling */
-.sidebar {
-    width: 280px;
-    background-color: var(--bg-secondary);
-    border-right: 1px solid rgba(255, 255, 255, 0.05);
-    padding: 1rem;
-}
-
 /* Enhanced scrollbar styling */
 ::-webkit-scrollbar {
     width: 10px;
@@ -183,4 +175,134 @@ textarea:focus {
 
 ::-webkit-scrollbar-thumb:hover {
     background: var(--text-secondary);
+}
+
+/* Layout container (flex) */
+.app-container {
+    display: flex;
+    height: 100vh;
+}
+
+.main-content {
+    flex: 1;
+    padding: 16px;
+    background-color: var(--bg-primary);
+}
+
+/* ============================== */
+/* BASE SIDEBAR CONTAINER         */
+/* ============================== */
+.sidebar {
+    width: 240px;
+    background-color: var(--bg-secondary);
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    flex-direction: column;
+}
+
+/* ============================== */
+/* SIDEBAR HEADER (top bar)       */
+/* ============================== */
+.sidebar-header {
+    padding: 1rem;
+    /* border-bottom: 1px solid var(--border); */
+}
+
+.sidebar-header-button {
+    /* Remove default button styling if needed */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background-color: transparent;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    font-weight: 400;
+    cursor: pointer;
+    border-radius: var(--border-radius);
+
+    transition: background-color var(--transition-duration),
+        color var(--transition-duration);
+}
+
+.sidebar-header-button:hover {
+    background-color: var(--bg-secondary-foreground, rgba(255, 255, 255, 0.05));
+    color: var(--text-primary);
+}
+
+/* ============================== */
+/* MAIN SCROLLABLE FILES AREA     */
+/* ============================== */
+.sidebar-files {
+    flex: 1;
+    overflow-y: auto;
+}
+
+/* "Notes" toggle row */
+.sidebar-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    /* ~4px */
+    cursor: pointer;
+    font-size: 0.75rem;
+    /* text-xs = 12px */
+    color: var(--text-secondary);
+    padding: 0.5rem;
+    border-radius: var(--border-radius);
+    transition: background-color var(--transition-duration), color var(--transition-duration);
+}
+
+.sidebar-toggle:hover {
+    background-color: var(--bg-secondary-foreground, rgba(255, 255, 255, 0.05));
+    color: var(--text-primary);
+}
+
+/* "Add file" button (the + icon) */
+.sidebar-add-file-button {
+    margin-left: auto;
+    /* push it to the right */
+    padding: 0.5rem;
+    font-size: 0.75rem;
+    background-color: transparent;
+    color: var(--text-secondary);
+    border-radius: var(--border-radius);
+    transition: background-color var(--transition-duration), color var(--transition-duration);
+    cursor: pointer;
+}
+
+.sidebar-add-file-button:hover {
+    background-color: var(--bg-secondary-foreground, rgba(255, 255, 255, 0.05));
+    color: var(--text-primary);
+}
+
+/* FILE LIST ITEM BUTTON */
+.sidebar-file-item {
+    display: flex;
+    align-items: left;
+    justify-content: left;
+    gap: 0.5rem;
+    width: 100%;
+    text-align: left;
+    font-size: 0.75rem;
+    padding: 0.25rem 1rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: background-color var(--transition-duration), color var(--transition-duration);
+    color: var(--text-secondary);
+    border-radius: var(--border-radius);
+}
+
+.sidebar-file-item:hover {
+    background-color: var(--bg-secondary-foreground, rgba(255, 255, 255, 0.05));
+    color: var(--text-primary);
+}
+
+/* ACTIVE FILE STATE */
+.sidebar-file-item.active {
+    background-color: var(--bg-secondary-foreground, rgba(255, 255, 255, 0.1));
+    color: var(--text-primary);
 }

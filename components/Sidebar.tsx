@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { MarkdownFile } from '../types/types';
 
+
 interface SidebarProps {
     files: MarkdownFile[];
     onFileClick: (file: MarkdownFile) => void;
@@ -12,27 +13,35 @@ interface SidebarProps {
     activeFile?: MarkdownFile;
 }
 
-const Sidebar = ({ files, onFileClick, onFolderSelect, onAddFile, activeFile }: SidebarProps) => {
+const Sidebar = ({
+    files,
+    onFileClick,
+    onFolderSelect,
+    onAddFile,
+    activeFile
+}: SidebarProps) => {
     const [isExpanded, setIsExpanded] = React.useState(true);
 
     return (
-        <div className="w-64 min-h-screen bg-secondary border-r border-border flex flex-col">
-            <div className="p-2 border-b border-border">
+        <div className="sidebar">
+            {/** Header (top) */}
+            <div className="sidebar-header">
+                {/* Folder select button */}
                 <Button
-                    variant="ghost"
-                    className="w-full bg-transparent hover:bg-secondary/80 text-gray-300
-                             flex items-center gap-2 text-sm font-normal"
+                    className="sidebar-header-button"
                     onClick={onFolderSelect}
                 >
-                    <FolderOpen className="h-4 w-4 text-muted-foreground" />
+                    <FolderOpen className="h-4 w-4" />
                     Select Folder
                 </Button>
             </div>
 
-            <div className="flex-1 overflow-y-auto">
+            {/** Scrollable files area */}
+            <div className="sidebar-files">
+                {/** Toggle row */}
                 <div
+                    className="sidebar-toggle"
                     onClick={() => setIsExpanded(!isExpanded)}
-                    className="flex items-center gap-1 text-muted-foreground hover:text-gray-200 text-xs p-2 cursor-pointer hover:bg-secondary/80"
                 >
                     {isExpanded ? (
                         <ChevronDown className="h-3.5 w-3.5" />
@@ -41,47 +50,40 @@ const Sidebar = ({ files, onFileClick, onFolderSelect, onAddFile, activeFile }: 
                     )}
                     Notes
 
-                    {/* Add a file button if files.length is ! 0 */}
                     {files.length > 0 && (
                         <Button
-                            size="icon"
-                            className="ml-auto text-muted-foreground hover:text-gray-200 text-xs p-2 cursor-pointer hover:bg-secondary/80"
+                            className="sidebar-add-file-button"
                             onClick={onAddFile}
-                    >
+                        >
                             <Plus className="h-3.5 w-3.5" />
                         </Button>
                     )}
                 </div>
 
+                {/** Expand/collapse file list */}
                 {isExpanded && (
-                    <div className="space-y-0.5">
+                    <div>
                         {files.length === 0 ? (
-                            <div className="text-gray-500 text-xs px-4 py-2">
+                            <div className="sidebar-no-files">
                                 No files in workspace
                             </div>
                         ) : (
-                            files.map((file) => (
-                                <button
-                                    key={file.name}
-                                    onClick={() => onFileClick(file)}
-                                    className={cn(
-                                        "w-full text-left px-4 py-1",
-                                        "flex items-center gap-2 text-xs",
-                                        "transition-colors",
-                                        activeFile?.name === file.name
-                                            ? "bg-secondary-foreground/10"
-                                            : "bg-transparent hover:bg-secondary-foreground/5",
-                                        activeFile?.name === file.name
-                                            ? "text-primary"
-                                            : "text-muted-foreground hover:text-primary"
-                                    )}
-                                >
-                                    <FileText className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-                                    <span className="truncate">
+                            files.map((file) => {
+                                const isActive = activeFile?.name === file.name;
+                                return (
+                                    <Button
+                                        key={file.name}
+                                        className={cn(
+                                            "sidebar-file-item",
+                                            isActive && "active",
+                                        )}
+                                        onClick={() => onFileClick(file)}
+                                    >
+                                        <FileText className="h-3.5 w-3.5 shrink-0" />
                                         {file.name.replace('.md', '')}
-                                    </span>
-                                </button>
-                            ))
+                                    </Button>
+                                );
+                            })
                         )}
                     </div>
                 )}
