@@ -3,23 +3,20 @@ import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { coldarkDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import remarkGfm from "remark-gfm";
-import { Eye, Edit2, Save, Maximize2, Minimize2, Image as ImageIcon } from "lucide-react";
+import { Eye, Edit2, Save, Maximize2, Minimize2, Image as ImageIcon, Trash } from "lucide-react";
 import Image from 'next/image';
 
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
-
-interface MarkdownFile {
-    name: string;
-    handle: FileSystemFileHandle;
-}
+import { MarkdownFile } from "@/types/types";
 
 interface MarkdownEditorProps {
     file: MarkdownFile;
+    onRefresh: () => void;
 }
 
-export default function MarkdownEditor({ file }: MarkdownEditorProps) {
+export default function MarkdownEditor({ file, onRefresh }: MarkdownEditorProps) {
     const [content, setContent] = useState("");
     const [isEditing, setIsEditing] = useState(false);
     const [isFullscreen, setIsFullscreen] = useState(false);
@@ -42,6 +39,48 @@ export default function MarkdownEditor({ file }: MarkdownEditorProps) {
         };
         loadFile();
     }, [file, toast]);
+
+    const handleSave = async () => {
+        try {
+            const writable = await file.handle.createWritable();
+            await writable.write(content);
+            await writable.close();
+            toast({
+                title: "Success",
+                description: "File saved successfully",
+            });
+        } catch (error) {
+            console.error("Error saving file:", error);
+            toast({
+                title: "Error",
+                description: "Failed to save the file",
+                variant: "destructive",
+            });
+        }
+    };
+
+    const handleDelete = async () => {
+        try {
+            const parentHandle = file.folder_handle;
+            if (!parentHandle) {
+                throw new Error("Could not access parent directory");
+            }
+
+            await parentHandle.removeEntry(file.name);
+            onRefresh();
+            toast({
+                title: "Success",
+                description: "File deleted successfully",
+            });
+        } catch (error) {
+            console.error("Error deleting file:", error);
+            toast({
+                title: "Error",
+                description: "Failed to delete the file",
+                variant: "destructive",
+            });
+        }
+    };
 
     // Custom components for ReactMarkdown with enhanced styling
     const components = {
@@ -134,17 +173,32 @@ export default function MarkdownEditor({ file }: MarkdownEditorProps) {
                         </div>
                     </div>
 
+                    <div className="text-sm font-medium text-muted-foreground">
+                        {file.name.replace('.md', '')}
+                    </div>
+
                     <div className="flex items-center gap-2">
                         {isEditing && (
                             <Button
                                 variant="secondary"
                                 size="sm"
                                 className="gap-2"
+                                onClick={handleSave}
                             >
                                 <Save className="h-4 w-4" />
                                 Save
                             </Button>
                         )}
+
+                        {/* Delete button */}
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={handleDelete}
+                        >
+                            <Trash className="h-4 w-4" />
+                        </Button>
+
                         <Button
                             variant="ghost"
                             size="sm"

@@ -1,21 +1,18 @@
 import React from 'react';
-import { FileText, FolderOpen, ChevronRight, ChevronDown } from 'lucide-react';
+import { FileText, FolderOpen, ChevronRight, ChevronDown, Plus } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-
-interface MarkdownFile {
-    name: string;
-    handle: FileSystemFileHandle;
-}
+import { MarkdownFile } from '../types/types';
 
 interface SidebarProps {
     files: MarkdownFile[];
     onFileClick: (file: MarkdownFile) => void;
     onFolderSelect: () => void;
+    onAddFile: () => void;
     activeFile?: MarkdownFile;
 }
 
-const Sidebar = ({ files, onFileClick, onFolderSelect, activeFile }: SidebarProps) => {
+const Sidebar = ({ files, onFileClick, onFolderSelect, onAddFile, activeFile }: SidebarProps) => {
     const [isExpanded, setIsExpanded] = React.useState(true);
 
     return (
@@ -43,6 +40,17 @@ const Sidebar = ({ files, onFileClick, onFolderSelect, activeFile }: SidebarProp
                         <ChevronRight className="h-3.5 w-3.5" />
                     )}
                     Notes
+
+                    {/* Add a file button if files.length is ! 0 */}
+                    {files.length > 0 && (
+                        <Button
+                            size="icon"
+                            className="ml-auto text-muted-foreground hover:text-gray-200 text-xs p-2 cursor-pointer hover:bg-secondary/80"
+                            onClick={onAddFile}
+                    >
+                            <Plus className="h-3.5 w-3.5" />
+                        </Button>
+                    )}
                 </div>
 
                 {isExpanded && (

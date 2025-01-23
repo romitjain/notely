@@ -28,4 +28,5 @@ interface FileSystemDirectoryHandle {
 
 interface Window {
     showDirectoryPicker(): Promise<FileSystemDirectoryHandle>;
+    showSaveFilePicker(options?: FileSystemFilePickerOptions): Promise<FileSystemFileHandle>;
 }
