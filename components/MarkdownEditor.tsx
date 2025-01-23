@@ -59,6 +59,18 @@ export default function MarkdownEditor({ file, onRefresh }: MarkdownEditorProps)
         }
     };
 
+    useEffect(() => {
+        const onSave = () => handleSave();
+        document.addEventListener('save-file', onSave);
+        return () => document.removeEventListener('save-file', onSave);
+    }, [handleSave]);
+
+    useEffect(() => {
+        const onToggleEdit = () => setIsEditing(!isEditing);
+        document.addEventListener('toggle-edit', onToggleEdit);
+        return () => document.removeEventListener('toggle-edit', onToggleEdit);
+    }, [isEditing]);
+
     const handleDelete = async () => {
         try {
             const parentHandle = file.folder_handle;

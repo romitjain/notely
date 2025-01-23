@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Sidebar from '../components/Sidebar';
 import MarkdownEditor from '../components/MarkdownEditor';
 import { MarkdownFile } from '../types/types';
@@ -72,6 +72,33 @@ export default function HomePage() {
         setFiles(markdownFiles);
         setCurrentFile(null);
     }
+
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            // Check if Ctrl/Cmd key is pressed
+            if (e.ctrlKey || e.metaKey) {
+                switch (e.key) {
+                    case 's':
+                        e.preventDefault();
+                        if (currentFile) {
+                            // Trigger save - we'll need to expose this from MarkdownEditor
+                            document.dispatchEvent(new CustomEvent('save-file'));
+                        }
+                        break;
+                    // Toggle edit mode
+                    case 'e':
+                        e.preventDefault();
+                        if (currentFile) {
+                            document.dispatchEvent(new CustomEvent('toggle-edit'));
+                        }
+                        break;
+                }
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+        return () => document.removeEventListener('keydown', handleKeyDown);
+    }, [currentFile]);
 
     return (
         <div style={{ display: 'flex', height: '100vh' }}>
