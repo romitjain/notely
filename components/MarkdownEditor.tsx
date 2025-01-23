@@ -3,7 +3,10 @@ import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { coldarkDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import remarkGfm from "remark-gfm";
-import { Eye, Edit2, Save, Maximize2, Minimize2, Image as ImageIcon, Trash } from "lucide-react";
+import {
+    Eye, Edit2, Save, Maximize2, Minimize2,
+    Image as ImageIcon, Trash
+} from "lucide-react";
 import Image from 'next/image';
 
 import { Button } from "@/components/ui/button";
@@ -77,7 +80,6 @@ export default function MarkdownEditor({ file, onRefresh }: MarkdownEditorProps)
             if (!parentHandle) {
                 throw new Error("Could not access parent directory");
             }
-
             await parentHandle.removeEntry(file.name);
             onRefresh();
             toast({
@@ -94,7 +96,7 @@ export default function MarkdownEditor({ file, onRefresh }: MarkdownEditorProps)
         }
     };
 
-    // Custom components for ReactMarkdown with enhanced styling
+    // Custom components for ReactMarkdown
     const components = {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         code({ inline, className, children, ...props }: any) {
@@ -104,22 +106,19 @@ export default function MarkdownEditor({ file, onRefresh }: MarkdownEditorProps)
                     style={coldarkDark}
                     language={match[1]}
                     PreTag="div"
-                    className="rounded-md !bg-muted"
+                    className="syntax-highlighter"  // see .syntax-highlighter in globals.css
                     {...props}
                 >
                     {String(children).replace(/\n$/, "")}
                 </SyntaxHighlighter>
             ) : (
-                <code className={cn("bg-muted rounded px-1.5 py-0.5", className)} {...props}>
+                <code className={cn("syntax-highlighter", className)} {...props}>
                     {children}
                 </code>
             );
         },
-        // Convert img component to a React component to properly use hooks
-        img: function MarkdownImage({ alt, src, ...props }: {
-            alt?: string;
-            src?: string;
-        }) {
+        // custom img handling
+        img: function MarkdownImage({ alt, src, ...props }: { alt?: string; src?: string }) {
             const [isLoading, setIsLoading] = useState(true);
             const [hasError, setHasError] = useState(false);
 
@@ -160,49 +159,47 @@ export default function MarkdownEditor({ file, onRefresh }: MarkdownEditorProps)
                     />
                 </span>
             );
-        }
+        },
     };
 
     return (
-        <div className={cn(
-            "flex flex-col h-screen",
-            isFullscreen && "fixed inset-0 z-50 bg-background"
-        )}>
-            {/* Toolbar */}
-            <div className="border-b border-border bg-muted/50 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-                <div className="flex items-center justify-between p-2">
-                    <div className="flex items-center gap-4">
-                        <div className="flex items-center gap-2">
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => setIsEditing(!isEditing)}
-                                className="gap-2"
-                            >
-                                {isEditing ? <Eye className="h-4 w-4" /> : <Edit2 className="h-4 w-4" />}
-                                {isEditing ? 'Preview' : 'Edit'}
-                            </Button>
-                        </div>
+        <div
+            className={cn(
+                "markdown-editor",          // base editor container
+                isFullscreen && "fullscreen" // toggles .markdown-editor.fullscreen in CSS
+            )}
+        >
+            {/* === Toolbar === */}
+            <div className="editor-toolbar">
+                <div className="editor-toolbar-content">
+                    <div className="editor-toolbar-group">
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setIsEditing(!isEditing)}
+                        >
+                            {isEditing ? <Eye className="h-4 w-4" /> : <Edit2 className="h-4 w-4" />}
+                            <span>{isEditing ? "Preview" : "Edit"}</span>
+                        </Button>
                     </div>
 
-                    <div className="text-sm font-medium text-muted-foreground">
-                        {file.name.replace('.md', '')}
+                    <div className="editor-toolbar-group">
+                        <span className="text-sm font-medium text-muted-foreground">
+                            {file.name.replace('.md', '')}
+                        </span>
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="editor-toolbar-group">
                         {isEditing && (
                             <Button
                                 variant="secondary"
                                 size="sm"
-                                className="gap-2"
                                 onClick={handleSave}
                             >
                                 <Save className="h-4 w-4" />
-                                Save
+                                <span>Save</span>
                             </Button>
                         )}
-
-                        {/* Delete button */}
                         <Button
                             variant="ghost"
                             size="sm"
@@ -210,38 +207,38 @@ export default function MarkdownEditor({ file, onRefresh }: MarkdownEditorProps)
                         >
                             <Trash className="h-4 w-4" />
                         </Button>
-
-                        <Button
+                        {/* <Button
                             variant="ghost"
                             size="sm"
                             onClick={() => setIsFullscreen(!isFullscreen)}
                         >
-                            {isFullscreen ?
-                                <Minimize2 className="h-4 w-4" /> :
+                            {isFullscreen ? (
+                                <Minimize2 className="h-4 w-4" />
+                            ) : (
                                 <Maximize2 className="h-4 w-4" />
-                            }
-                        </Button>
+                            )}
+                        </Button> */}
                     </div>
                 </div>
             </div>
 
-            {/* Editor/Preview area */}
-            <div className="flex-1 overflow-auto">
+            {/* === Editor / Preview Area === */}
+            <div className="editor-main">
                 {isEditing ? (
-                    <div className="h-full p-4">
+                    <div style={{ height: "100%", padding: "1rem" }}>
                         <textarea
-                            className="w-full h-full bg-background rounded-lg p-4 
-                                     text-sm font-mono text-foreground
-                                     border border-border
-                                     focus:outline-none focus:ring-1 focus:ring-primary/20
-                                     resize-none"
+                            className="editor-textarea"
                             value={content}
                             onChange={(e) => setContent(e.target.value)}
                             spellCheck={false}
                         />
                     </div>
                 ) : (
-                    <div className="prose prose-invert max-w-none p-8">
+                    <div
+                        className={cn(
+                            "prose prose-invert max-w-none p-8"
+                        )}
+                    >
                         <ReactMarkdown
                             remarkPlugins={[remarkGfm]}
                             components={components}
