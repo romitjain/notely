@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { coldarkDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import remarkGfm from "remark-gfm";
 import {
-    Eye, Edit2, Save, Maximize2, Minimize2,
+    Eye, Edit2, Save,
     Image as ImageIcon, Trash
 } from "lucide-react";
 import Image from 'next/image';
@@ -22,7 +22,7 @@ interface MarkdownEditorProps {
 export default function MarkdownEditor({ file, onRefresh }: MarkdownEditorProps) {
     const [content, setContent] = useState("");
     const [isEditing, setIsEditing] = useState(false);
-    const [isFullscreen, setIsFullscreen] = useState(false);
+    // const [isFullscreen, setIsFullscreen] = useState(false);
     const { toast } = useToast();
 
     useEffect(() => {
@@ -43,7 +43,7 @@ export default function MarkdownEditor({ file, onRefresh }: MarkdownEditorProps)
         loadFile();
     }, [file, toast]);
 
-    const handleSave = async () => {
+    const handleSave = useCallback(async () => {
         try {
             const writable = await file.handle.createWritable();
             await writable.write(content);
@@ -60,7 +60,7 @@ export default function MarkdownEditor({ file, onRefresh }: MarkdownEditorProps)
                 variant: "destructive",
             });
         }
-    };
+    }, [file.handle, content, toast]);
 
     useEffect(() => {
         const onSave = () => handleSave();
@@ -166,7 +166,7 @@ export default function MarkdownEditor({ file, onRefresh }: MarkdownEditorProps)
         <div
             className={cn(
                 "markdown-editor",          // base editor container
-                isFullscreen && "fullscreen" // toggles .markdown-editor.fullscreen in CSS
+                // isFullscreen && "fullscreen" // toggles .markdown-editor.fullscreen in CSS
             )}
         >
             {/* === Toolbar === */}
