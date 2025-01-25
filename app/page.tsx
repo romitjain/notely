@@ -108,7 +108,10 @@ export default function HomePage() {
                 {currentFile ? (
                     <MarkdownEditor file={currentFile} onRefresh={handleRefresh} />
                 ) : (
-                    <p>Select a folder to view your notes.</p>
+                    <p>
+                    A simple, privacy-focused journaling app. Notely runs entirely in your web browser, loading markdown files directly from a local folder you choose. Write your notes in markdown.
+                    Select a folder from the sidebar to get started.
+                    </p>
                 )}
             </main>
         </div>

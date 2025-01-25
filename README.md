@@ -1,8 +1,6 @@
 # Notely
 
-A simple, privacy-focused journaling app.
-
-Notely runs entirely in your web browser, loading markdown files directly from a local folder you choose. Write your notes in markdown.
+A simple, privacy-focused journaling app. Notely runs entirely in your web browser, loading markdown files directly from a local folder you choose. Write your notes in markdown.
 
 ## Key Features
 
