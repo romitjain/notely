@@ -5,9 +5,8 @@ import { coldarkDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import remarkGfm from "remark-gfm";
 import {
     Eye, Edit2, Save,
-    Image as ImageIcon, Trash
+    Trash
 } from "lucide-react";
-import Image from 'next/image';
 
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
