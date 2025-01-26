@@ -68,22 +68,24 @@ const Sidebar = ({
                                 No files in workspace
                             </div>
                         ) : (
-                            files.map((file) => {
-                                const isActive = activeFile?.name === file.name;
-                                return (
-                                    <Button
-                                        key={file.name}
-                                        className={cn(
-                                            "sidebar-file-item",
-                                            isActive && "active",
-                                        )}
-                                        onClick={() => onFileClick(file)}
-                                    >
-                                        <FileText className="h-3.5 w-3.5 shrink-0" />
-                                        {file.name.replace('.md', '')}
-                                    </Button>
-                                );
-                            })
+                            [...files]
+                                .sort((a, b) => b.modified - a.modified)
+                                .map((file) => {
+                                    const isActive = activeFile?.name === file.name;
+                                    return (
+                                        <Button
+                                            key={file.name}
+                                            className={cn(
+                                                "sidebar-file-item",
+                                                isActive && "active",
+                                            )}
+                                            onClick={() => onFileClick(file)}
+                                        >
+                                            <FileText className="h-3.5 w-3.5 shrink-0" />
+                                            {file.name.replace('.md', '')}
+                                        </Button>
+                                    );
+                                })
                         )}
                     </div>
                 )}

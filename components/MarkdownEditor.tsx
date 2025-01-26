@@ -118,48 +118,48 @@ export default function MarkdownEditor({ file, onRefresh }: MarkdownEditorProps)
             );
         },
         // custom img handling
-        img: function MarkdownImage({ alt, src, ...props }: { alt?: string; src?: string }) {
-            const [isLoading, setIsLoading] = useState(true);
-            const [hasError, setHasError] = useState(false);
+        // img: function MarkdownImage({ alt, src, ...props }: { alt?: string; src?: string }) {
+        //     const [isLoading, setIsLoading] = useState(true);
+        //     const [hasError, setHasError] = useState(false);
 
-            return (
-                <span className="relative inline-block">
-                    {/* Loading state */}
-                    {isLoading && !hasError && (
-                        <div className="absolute inset-0 flex items-center justify-center bg-muted rounded-md">
-                            <ImageIcon className="h-6 w-6 text-muted-foreground animate-pulse" />
-                        </div>
-                    )}
+        //     return (
+        //         <span className="relative inline-block">
+        //             {/* Loading state */}
+        //             {isLoading && !hasError && (
+        //                 <div className="absolute inset-0 flex items-center justify-center bg-muted rounded-md">
+        //                     <ImageIcon className="h-6 w-6 text-muted-foreground animate-pulse" />
+        //                 </div>
+        //             )}
 
-                    {/* Error state */}
-                    {hasError && (
-                        <div className="flex items-center gap-2 text-destructive bg-destructive/10 rounded-md p-2">
-                            <ImageIcon className="h-4 w-4" />
-                            <span className="text-sm">Failed to load image: {alt}</span>
-                        </div>
-                    )}
+        //             {/* Error state */}
+        //             {hasError && (
+        //                 <div className="flex items-center gap-2 text-destructive bg-destructive/10 rounded-md p-2">
+        //                     <ImageIcon className="h-4 w-4" />
+        //                     <span className="text-sm">Failed to load image: {alt}</span>
+        //                 </div>
+        //             )}
 
-                    {/* Actual image */}
-                    <Image
-                        src={src || ''}
-                        alt={alt || ''}
-                        width={800}
-                        height={600}
-                        className={cn(
-                            "max-w-full h-auto rounded-md",
-                            isLoading && "opacity-0",
-                            hasError && "hidden"
-                        )}
-                        onLoad={() => setIsLoading(false)}
-                        onError={() => {
-                            setIsLoading(false);
-                            setHasError(true);
-                        }}
-                        {...props}
-                    />
-                </span>
-            );
-        },
+        //             {/* Actual image */}
+        //             <Image
+        //                 src={src || ''}
+        //                 alt={alt || ''}
+        //                 width={800}
+        //                 height={600}
+        //                 className={cn(
+        //                     "max-w-full h-auto rounded-md",
+        //                     isLoading && "opacity-0",
+        //                     hasError && "hidden"
+        //                 )}
+        //                 onLoad={() => setIsLoading(false)}
+        //                 onError={() => {
+        //                     setIsLoading(false);
+        //                     setHasError(true);
+        //                 }}
+        //                 {...props}
+        //             />
+        //         </span>
+        //     );
+        // },
     };
 
     return (

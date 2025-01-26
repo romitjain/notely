@@ -23,7 +23,14 @@ export default function HomePage() {
             for await (const [name, handle] of directoryHandle.entries()) {
                 // Only push .md files
                 if (handle.kind === 'file' && name.endsWith('.md')) {
-                    markdownFiles.push({ name, handle, folder_handle: directoryHandle });
+                    const file = await handle.getFile();
+                    markdownFiles.push({ 
+                        name, 
+                        handle, 
+                        folder_handle: directoryHandle,
+                        created: file.lastModified,  // Note: This is actually last modified time as creation time isn't available
+                        modified: file.lastModified
+                    });
                 }
             }
 
@@ -42,10 +49,13 @@ export default function HomePage() {
                 types: [{ description: "Markdown File", accept: { "text/markdown": [".md"] } }],
             });
 
+            const file = await newFileHandle.getFile();
             const newFile = {
                 name: newFileHandle.name,
                 handle: newFileHandle,
                 folder_handle: currentFile?.folder_handle,
+                created: file.lastModified,
+                modified: file.lastModified
             };
             setFiles(prev => [...prev, newFile]);
             setCurrentFile(newFile);
@@ -61,7 +71,14 @@ export default function HomePage() {
         const markdownFiles: MarkdownFile[] = [];
         for await (const [name, handle] of currentFolder.entries()) {
             if (handle.kind === 'file' && name.endsWith('.md')) {
-                markdownFiles.push({ name, handle, folder_handle: currentFolder });
+                const file = await handle.getFile();
+                markdownFiles.push({ 
+                    name, 
+                    handle, 
+                    folder_handle: currentFolder,
+                    created: file.lastModified,
+                    modified: file.lastModified
+                });
             }
         }
 
@@ -109,7 +126,9 @@ export default function HomePage() {
                     <MarkdownEditor file={currentFile} onRefresh={handleRefresh} />
                 ) : (
                     <p>
-                    A simple, privacy-focused journaling app. Notely runs entirely in your web browser, loading markdown files directly from a local folder you choose. Write your notes in markdown.
+                    A simple, privacy-focused journaling app. <br />
+                    Notely runs entirely in your web browser, loading markdown files directly from a local folder you choose. <br />
+                    Ctrl + E to edit, Ctrl + S to save. <br />
                     Select a folder from the sidebar to get started.
                     </p>
                 )}
