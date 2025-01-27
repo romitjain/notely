@@ -4,11 +4,12 @@ import React, { useState, useEffect } from 'react';
 import Sidebar from '../components/Sidebar';
 import MarkdownEditor from '../components/MarkdownEditor';
 import { MarkdownFile } from '../types/types';
+import CommandMenu from '../components/Search'
 
 export default function HomePage() {
     const [files, setFiles] = useState<MarkdownFile[]>([]);
-    const [currentFolder, setCurrentFolder] = useState<FileSystemDirectoryHandle | null>(null);
-    const [currentFile, setCurrentFile] = useState<MarkdownFile | null>(null);
+    const [currentFolder, setCurrentFolder] = useState<FileSystemDirectoryHandle | undefined>(undefined);
+    const [currentFile, setCurrentFile] = useState<MarkdownFile | undefined>(undefined);
 
     const handleFolderSelection = async () => {
         if (!('showDirectoryPicker' in window)) {
@@ -36,16 +37,24 @@ export default function HomePage() {
 
             setFiles(markdownFiles);
             setCurrentFolder(directoryHandle);
-            setCurrentFile(null);
+            setCurrentFile(undefined);
         } catch (error) {
             console.error('Error accessing folder:', error);
         }
     };
 
+    useEffect(() => {
+        const onOpenFolder = () => handleFolderSelection();
+        document.addEventListener('open-folder', onOpenFolder);
+        return () => document.removeEventListener('open-folder', onOpenFolder);
+    }, []);
+
     const handleAddFile = async () => {
         try {
+            const today = new Date();
+            const dateString = today.toISOString().split('T')[0]; // Format: YYYY-MM-DD
             const newFileHandle = await window.showSaveFilePicker({
-                suggestedName: "New File.md",
+                suggestedName: `${dateString}.md`,
                 types: [{ description: "Markdown File", accept: { "text/markdown": [".md"] } }],
             });
 
@@ -83,7 +92,7 @@ export default function HomePage() {
         }
 
         setFiles(markdownFiles);
-        setCurrentFile(null);
+        setCurrentFile(undefined);
     };
 
     useEffect(() => {
@@ -103,6 +112,10 @@ export default function HomePage() {
                             document.dispatchEvent(new CustomEvent('toggle-edit'));
                         }
                         break;
+                    case 'o':
+                        e.preventDefault();
+                        document.dispatchEvent(new CustomEvent('open-folder'));
+                        break;
                 }
             }
         };
@@ -113,12 +126,14 @@ export default function HomePage() {
 
     return (
         <div className="app-container">
+            <CommandMenu files={files} />
             {/* Sidebar has its own .sidebar class in globals.css */}
             <Sidebar
                 files={files}
                 onFileClick={setCurrentFile}
                 onFolderSelect={handleFolderSelection}
                 onAddFile={handleAddFile}
+                activeFolder={currentFolder}
             />
 
             <main className="main-content">
@@ -126,10 +141,11 @@ export default function HomePage() {
                     <MarkdownEditor file={currentFile} onRefresh={handleRefresh} />
                 ) : (
                     <p>
-                    A simple, privacy-focused journaling app. <br />
-                    Notely runs entirely in your web browser, loading markdown files directly from a local folder you choose. <br />
+                    Notely is a simple, privacy-focused journaling app that runs entirely in your web browser. <br />
+                    It loads local markdown files from a folder you choose. <br />
+                    Select a folder from the sidebar to get started. <br />
+                    Ctrl + O to open a folder. <br />
                     Ctrl + E to edit, Ctrl + S to save. <br />
-                    Select a folder from the sidebar to get started.
                     </p>
                 )}
             </main>

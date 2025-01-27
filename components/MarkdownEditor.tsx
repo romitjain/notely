@@ -176,6 +176,7 @@ export default function MarkdownEditor({ file, onRefresh }: MarkdownEditorProps)
                             variant="ghost"
                             size="sm"
                             onClick={() => setIsEditing(!isEditing)}
+                            title={isEditing ? "Preview (Ctrl + E)" : "Edit (Ctrl + E)"}
                         >
                             {isEditing ? <Eye className="h-4 w-4" /> : <Edit2 className="h-4 w-4" />}
                             <span>{isEditing ? "Preview" : "Edit"}</span>
@@ -194,6 +195,7 @@ export default function MarkdownEditor({ file, onRefresh }: MarkdownEditorProps)
                                 variant="secondary"
                                 size="sm"
                                 onClick={handleSave}
+                                title="Ctrl + S"
                             >
                                 <Save className="h-4 w-4" />
                                 <span>Save</span>
@@ -203,6 +205,7 @@ export default function MarkdownEditor({ file, onRefresh }: MarkdownEditorProps)
                             variant="ghost"
                             size="sm"
                             onClick={handleDelete}
+                            title="Delete"
                         >
                             <Trash className="h-4 w-4" />
                         </Button>

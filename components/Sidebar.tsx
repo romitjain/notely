@@ -10,7 +10,8 @@ interface SidebarProps {
     onFileClick: (file: MarkdownFile) => void;
     onFolderSelect: () => void;
     onAddFile: () => void;
-    activeFile?: MarkdownFile;
+    activeFile?: MarkdownFile | undefined;
+    activeFolder?: FileSystemDirectoryHandle | undefined;
 }
 
 const Sidebar = ({
@@ -18,7 +19,8 @@ const Sidebar = ({
     onFileClick,
     onFolderSelect,
     onAddFile,
-    activeFile
+    activeFile,
+    activeFolder
 }: SidebarProps) => {
     const [isExpanded, setIsExpanded] = React.useState(true);
 
@@ -48,7 +50,7 @@ const Sidebar = ({
                     ) : (
                         <ChevronRight className="h-3.5 w-3.5" />
                     )}
-                    Notes
+                    {activeFolder ? activeFolder.name : "Notes"}
 
                     {files.length > 0 && (
                         <Button

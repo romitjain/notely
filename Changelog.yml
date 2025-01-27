@@ -1,0 +1,8 @@
+- date: 2025-01-27
+  changes:
+    - Added analytics
+    - Added CTRL + O to open folder
+    - Updated welcome message
+    - Updated default file name
+    - Updated sidebar to show folder name
+    - Experimental - Trying with search functionality
